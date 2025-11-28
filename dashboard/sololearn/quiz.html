@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    section{
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(252, 252, 255);
+  }
+  .quiz-con{
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 1px 7px 30px rgb(199, 199, 199);
+  }
+  .quiz-con .header{
+    margin-bottom: 20px;
+  }
+  .question-con{
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: aliceblue;
+    box-shadow: 1px 7px 30px rgb(200, 199, 199);
+    
+  }
+  .btn-group{
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+#trueBtn, #falseBtn, #restartBtn{
+    margin-top: 35px;
+    padding: 12px 25px;
+    border-radius: 10px;
+    box-shadow: 1px 7px 30px rgb(136, 136, 136);
+    color: white;
+    border: none;
+    width: 45%;
+    font-weight: 900;
+}
+#trueBtn{
+    background-color: green;
+}
+#falseBtn{
+    background-color: red;
+}
+#restartBtn{
+    margin-top: 20px;
+    width: 100%;
+    background-color: blue;
+}
+.score-con {
+    display: flex;
+    justify-content: space-between;
+}
+.hide{
+    display: none;
+}
+.success{
+    color: green;
+}
+.error{
+    color: red;
+}
+</style>
+<body>
+   <section>
+    <div class="quiz-con">
+        <div class="header"><h1>True or False quiz app</h1></div>
+        <main>
+            <div class="score-con">
+                <label for="Score">Score: </label>
+                <p id="score"></p>
+            </div>
+            <div class="question-con">
+                <p id="question">loading question...</p>
+            </div>
+            <div id="message">Correcet answer</div>
+            <div class="btn-group">
+                <button id="trueBtn" onclick="trueFunc()">TRUE</button>
+                <button id="falseBtn" onclick="falseFunc()">FALSE</button>
+            </div>
+            <button id="restartBtn" onclick="startQuiz()">Try Again</button>
+        </main>
+    </div>
+   </section>
+
+    <script>
+        const questionText = document.getElementById("question");
+        const btnTrue = document.getElementById("trueBtn");
+        const btnFalse = document.getElementById("falseBtn");
+        const scoreElement = document.getElementById("score");
+        const restartBtn = document.getElementById("restartBtn");
+        const mssg = document.getElementById("message");
+
+        let questions = []
+        let currentQuestionIndex = 0;
+        let score = 0;
+    
+
+        function startQuiz(){
+            multiple_choice = [
+                {
+                    question: "Who develop Java languge?",
+                    choices : ["Albert", "James Gosling", "Neil Armstrong"],
+                    answer: "Albert"
+                }, {
+                    question: "Who develop JavaScript?",
+                    choices : ["Albert", "James Gosling", "Neil Armstrong"],
+                    answer: "Neil Armstrong"
+                }
+            ]
+            questions = [
+        {
+            questioned: "html is a programming language?",
+            answer_key: false
+        },{
+            questioned: "Is ai can replace frontend developer?",
+            answer_key: false
+        },{
+            questioned: "Is computer can only understand numbers?",
+            answer_key: true
+        }
+     ]
+         score = 0;
+         currentQuestionIndex = 0;
+         restartBtn.classList.add('hide');
+         btnTrue.disabled = false;
+         btnFalse.disabled = false;
+         btnFalse.classList.remove('opacity');
+         btnTrue.classList.remove('opacity');
+         mssg.textContent = '';
+
+         updateUI();
+         nextQuestion();
+        }
+
+        function updateUI(){
+            scoreElement.textContent = score;
+        }
+
+        function nextQuestion(){
+            setTimeout(()=>{
+                mssg.textContent = '';
+                questionText.classList.remove('error', 'success');
+            }, 700);
+
+            if(currentQuestionIndex < questions.length){
+                const q = questions[currentQuestionIndex];
+                questionText.textContent = q.questioned;
+            } else {
+                questionText.textContent = `Quiz completed, your score is ${score}`;
+                btnFalse.disabled = true;
+                btnTrue.disabled = true;
+                restartBtn.classList.remove('hide');
+                btnFalse.classList.add('opacity');
+                btnTrue.classList.add('opacity');
+                mssg.textContent = 'Good job!';
+            }
+            updateUI();
+        }
+        function checkAnswer(guess) {
+            if(currentQuestionIndex >= questions.length) return;
+
+            const currentQuestion = questions[currentQuestionIndex];
+            const answer = currentQuestion.answer_key;
+            
+            const isCorrect = (guess == answer);
+            if(isCorrect){
+                score++;
+                mssg.textContent = 'Correct!';
+                questionText.classList.add('success');
+                mssg.classList.add('success');
+                mssg.classList.remove('error');
+            } else {
+                mssg.textContent = 'Incorrect!';
+                questionText.classList.add('error');
+                mssg.classList.add('error');
+                mssg.classList.remove('success');
+            }
+            currentQuestionIndex++;
+            nextQuestion();
+        }
+
+        function trueFunc(){
+            checkAnswer(true);
+        }
+        function falseFunc(){
+            checkAnswer(false);
+        }
+
+
+        window.onload = startQuiz;
+    
+    </script>
+
+    <script>
+        // let counter = 5;
+        // while(counter > 0){
+        //     alert("Alrt1");
+        //     counter = counter - 1;
+        // // {}
+        // function clickMe(message){
+        //     alert(message)
+        // }
+        // let text = document.getElementById("title");
+        // let value = text.style.color;
+        // console.log(value);
+        // let btn = document.getElementById("btn");
+        // let v = btn.style.backgroundColor;
+        // console.log(v);
+        // let input = document.getElementById("input").value;
+        // // text.textContent = input;
+        // console.log(text);
+
+        // let content = document.getElementById("content");
+        // function changeTitle(input){
+        //     content.textContent = input;
+        //     // console.log(text);
+        // }
+
+
+        // function trueButton(answer){
+           
+        // }}
+    </script>
+</body>
+</html>
